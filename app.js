@@ -127,7 +127,7 @@ function loadChat(id) {
 function showWelcome() {
   messagesEl.innerHTML = `
     <div class="welcome-msg">
-      <h2>NEURON</h2>
+      <h2>GSO-BOT</h2>
       <p>Your model is loaded and ready.<br>Ask anything — your conversation stays completely private.</p>
     </div>`;
 }
