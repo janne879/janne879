@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GSO-BOT — Local AI Chat</title>
+  <title>GSO KI-Chat — Lokaler KI-Assistent</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -18,51 +18,51 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="logo">
-        <span class="logo-mark">GSO/span>
-        <span class="logo-text">GSO-BOT</span>
+        <img src="https://www.gso-koeln.de/wp-content/uploads/2019/10/ICON-GSO_URL.png" class="logo-img" alt="GSO Logo" />
+        <span class="logo-text">GSO KI-CHAT</span>
       </div>
-      <button class="icon-btn" id="new-chat-btn" title="New Chat">
+      <button class="icon-btn" id="new-chat-btn" title="Neuer Chat">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
       </button>
     </div>
 
     <!-- Model selector -->
     <div class="model-section">
-      <label class="section-label">MODEL</label>
+      <label class="section-label">MODELL</label>
       <div class="model-selector" id="model-selector">
         <div class="model-option active" data-model="Llama-3.2-3B-Instruct-q4f32_1-MLC">
           <span class="model-dot"></span>
           <div>
             <div class="model-name">Llama 3.2 3B</div>
-            <div class="model-meta">~2GB · Fast</div>
+            <div class="model-meta">~2GB · Schnell</div>
           </div>
         </div>
         <div class="model-option" data-model="Llama-3.1-8B-Instruct-q4f32_1-MLC">
           <span class="model-dot"></span>
           <div>
             <div class="model-name">Llama 3.1 8B</div>
-            <div class="model-meta">~5GB · Balanced</div>
+            <div class="model-meta">~5GB · Ausgewogen</div>
           </div>
         </div>
         <div class="model-option" data-model="Phi-3.5-mini-instruct-q4f16_1-MLC">
           <span class="model-dot"></span>
           <div>
             <div class="model-name">Phi-3.5 Mini</div>
-            <div class="model-meta">~2.5GB · Efficient</div>
+            <div class="model-meta">~2.5GB · Effizient</div>
           </div>
         </div>
         <div class="model-option" data-model="gemma-2-2b-it-q4f16_1-MLC">
           <span class="model-dot"></span>
           <div>
             <div class="model-name">Gemma 2 2B</div>
-            <div class="model-meta">~1.5GB · Compact</div>
+            <div class="model-meta">~1.5GB · Kompakt</div>
           </div>
         </div>
         <div class="model-option" data-model="Mistral-7B-Instruct-v0.3-q4f16_1-MLC">
           <span class="model-dot"></span>
           <div>
             <div class="model-name">Mistral 7B</div>
-            <div class="model-meta">~4.5GB · Powerful</div>
+            <div class="model-meta">~4.5GB · Leistungsstark</div>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
 
     <!-- Chat history -->
     <div class="history-section">
-      <label class="section-label">RECENT</label>
+      <label class="section-label">VERLAUF</label>
       <div class="chat-history" id="chat-history">
         <!-- Populated by JS -->
       </div>
@@ -80,12 +80,12 @@
     <div class="sidebar-footer">
       <div class="device-info" id="device-info">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        <span>Detecting device…</span>
+        <span>Gerät wird erkannt…</span>
       </div>
       <div class="sidebar-links">
         <a href="https://github.com/mlc-ai/web-llm" target="_blank">WebLLM</a>
         <span>·</span>
-        <a href="https://github.com/" target="_blank">Source</a>
+        <a href="https://github.com/" target="_blank">Quellcode</a>
       </div>
     </div>
   </aside>
@@ -97,13 +97,13 @@
       <button class="icon-btn sidebar-toggle" id="sidebar-toggle">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <div class="current-model-tag" id="current-model-tag">No model loaded</div>
+      <div class="current-model-tag" id="current-model-tag">Kein Modell geladen</div>
       <div class="topbar-actions">
         <div class="status-indicator" id="status-indicator">
           <span class="status-dot"></span>
           <span class="status-text">Offline</span>
         </div>
-        <button class="icon-btn" id="clear-btn" title="Clear chat">
+        <button class="icon-btn" id="clear-btn" title="Chat löschen">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
         </button>
       </div>
@@ -116,34 +116,34 @@
           <div class="load-ring"></div>
           <span>N</span>
         </div>
-        <h1>GSO-BOT</h1>
-        <p>Run powerful AI models entirely in your browser.<br>No servers. No data sent anywhere. 100% private.</p>
+        <h1>GSO KI-Chat</h1>
+        <p>Leistungsstarke KI-Modelle direkt im Browser ausführen.<br>Keine Server. Keine Datenübertragung. 100% privat.</p>
         <div class="load-features">
           <div class="feature">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>Fully private — runs locally</span>
+            <span>Vollständig privat — läuft lokal</span>
           </div>
           <div class="feature">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            <span>Works offline after first load</span>
+            <span>Funktioniert offline nach dem ersten Laden</span>
           </div>
           <div class="feature">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span>WebGPU accelerated</span>
+            <span>WebGPU-beschleunigt</span>
           </div>
         </div>
         <button class="load-btn" id="load-model-btn">
-          <span>Load Model</span>
+          <span>Modell laden</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
         <div class="load-progress-wrap" id="load-progress-wrap" style="display:none">
           <div class="load-progress-bar">
             <div class="load-progress-fill" id="load-progress-fill"></div>
           </div>
-          <div class="load-progress-label" id="load-progress-label">Initializing…</div>
+          <div class="load-progress-label" id="load-progress-label">Initialisierung…</div>
         </div>
         <div class="webgpu-warning" id="webgpu-warning" style="display:none">
-          ⚠️ WebGPU not detected. Try Chrome 113+ or Edge on desktop.
+          ⚠️ WebGPU nicht erkannt. Bitte Chrome 113+ oder Edge verwenden.
         </div>
       </div>
     </div>
@@ -160,7 +160,7 @@
       <div class="input-wrap">
         <textarea
           id="user-input"
-          placeholder="Message GSO-BOT..."
+          placeholder="Nachricht eingeben…"
           rows="1"
           maxlength="4000"
         ></textarea>
@@ -172,10 +172,10 @@
         </div>
       </div>
       <div class="input-footer">
-        <span>GSO-BOT can make mistakes. Verify important information.</span>
+        <span>KI kann Fehler machen. Wichtige Informationen bitte prüfen.</span>
         <button class="stop-btn" id="stop-btn" style="display:none">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
-          Stop
+          Stopp
         </button>
       </div>
     </div>

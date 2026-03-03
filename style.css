@@ -92,6 +92,14 @@ body { display: flex; position: relative; z-index: 1; }
 .logo {
   display: flex; align-items: center; gap: 10px;
 }
+.logo-img {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
+  padding: 3px;
+  box-shadow: 0 0 16px var(--accent-glow);
+}
 .logo-mark {
   width: 32px; height: 32px;
   background: var(--accent);

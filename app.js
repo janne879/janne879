@@ -1,5 +1,5 @@
 /**
- * NEURON — WebLLM Chat Interface
+ * GSO KI-Chat — WebLLM Chat Interface
  * Powered by @mlc-ai/web-llm (runs entirely in the browser via WebGPU)
  */
 
@@ -47,13 +47,13 @@ const charCount     = $("char-count");
   if (!navigator.gpu) {
     webgpuWarn.style.display = "block";
     loadModelBtn.disabled = true;
-    setStatus("error", "No WebGPU");
+    setStatus("error", "Kein WebGPU");
   }
 })();
 
 // ─── Device Detection ─────────────────────────────────────────────────────────
 function detectDevice() {
-  const gpu = navigator.gpu ? "WebGPU ✓" : "No WebGPU";
+  const gpu = navigator.gpu ? "WebGPU ✓" : "Kein WebGPU";
   const mem = navigator.deviceMemory ? `${navigator.deviceMemory}GB RAM` : "";
   const info = [gpu, mem].filter(Boolean).join(" · ");
   deviceInfo.querySelector("span").textContent = info;
@@ -69,20 +69,20 @@ function setStatus(state, text) {
 async function loadModel() {
   loadModelBtn.disabled = true;
   loadProgress.style.display = "block";
-  setStatus("loading", "Loading…");
+  setStatus("loading", "Lädt…");
 
   try {
     engine = await webllm.CreateMLCEngine(selectedModel, {
       initProgressCallback: (progress) => {
         const pct = Math.round((progress.progress || 0) * 100);
         progressFill.style.width = `${pct}%`;
-        progressLabel.textContent = progress.text || `Loading… ${pct}%`;
+        progressLabel.textContent = progress.text || `Lädt… ${pct}%`;
       }
     });
 
     // Success — show chat UI
     currentTag.textContent = selectedModel;
-    setStatus("ready", "Ready");
+    setStatus("ready", "Bereit");
     loadScreen.style.display = "none";
     chatArea.style.display = "flex";
     inputArea.style.display = "block";
@@ -93,8 +93,8 @@ async function loadModel() {
 
   } catch (err) {
     console.error("Model load error:", err);
-    setStatus("error", "Error");
-    progressLabel.textContent = `Failed: ${err.message}`;
+    setStatus("error", "Fehler");
+    progressLabel.textContent = `Fehlgeschlagen: ${err.message}`;
     loadModelBtn.disabled = false;
   }
 }
@@ -103,7 +103,7 @@ async function loadModel() {
 function newChat() {
   currentChatId = `chat_${Date.now()}`;
   currentMessages = [];
-  chats[currentChatId] = { title: "New Chat", messages: [] };
+  chats[currentChatId] = { title: "Neuer Chat", messages: [] };
   saveHistory();
   renderHistory();
   renderMessages();
@@ -127,8 +127,8 @@ function loadChat(id) {
 function showWelcome() {
   messagesEl.innerHTML = `
     <div class="welcome-msg">
-      <h2>GSO-BOT</h2>
-      <p>Your model is loaded and ready.<br>Ask anything — your conversation stays completely private.</p>
+      <h2>GSO KI-Chat</h2>
+      <p>Dein Modell ist geladen und bereit.<br>Stell beliebige Fragen – dein Gespräch bleibt vollständig privat.</p>
     </div>`;
 }
 
@@ -192,9 +192,9 @@ async function sendMessage() {
 
   } catch (err) {
     if (!abortController.signal.aborted) {
-      bubble.innerHTML = `<span style="color:var(--red)">Error: ${err.message}</span>`;
+      bubble.innerHTML = `<span style="color:var(--red)">Fehler: ${err.message}</span>`;
     }
-    fullResponse = fullResponse || "[Generation stopped]";
+    fullResponse = fullResponse || "[Generierung gestoppt]";
   }
 
   // Save assistant reply
@@ -286,14 +286,14 @@ function formatMarkdown(text) {
 
 function addCodeCopyButtons(container) {
   container.querySelectorAll("pre").forEach(pre => {
-    if (pre.querySelector(".copy-code-btn")) return;
+    if (pre.querySelector(".kopieren-code-btn")) return;
     const btn = document.createElement("button");
-    btn.className = "copy-code-btn";
-    btn.textContent = "copy";
+    btn.className = "kopieren-code-btn";
+    btn.textContent = "kopieren";
     btn.onclick = () => {
       navigator.clipboard.writeText(pre.querySelector("code")?.textContent || "");
-      btn.textContent = "copied!";
-      setTimeout(() => btn.textContent = "copy", 2000);
+      btn.textContent = "kopiert!";
+      setTimeout(() => btn.textContent = "kopieren", 2000);
     };
     pre.style.position = "relative";
     pre.appendChild(btn);
@@ -320,7 +320,7 @@ function loadHistory() {
 function renderHistory() {
   const entries = Object.entries(chats).reverse();
   if (entries.length === 0) {
-    historyEl.innerHTML = `<div class="history-empty">No chats yet</div>`;
+    historyEl.innerHTML = `<div class="history-empty">Noch keine Chats</div>`;
     return;
   }
   historyEl.innerHTML = entries.map(([id, chat]) => `
