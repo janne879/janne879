@@ -1,11 +1,5 @@
-/**
- * GSO KI-Chat — WebLLM Chat Interface
- * Features: System-Prompt, Tipp-Sounds, Token-Statistik
- */
-
 import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
-// ─── State ────────────────────────────────────────────────────────────────────
 let engine = null;
 let isGenerating = false;
 let currentChatId = null;
@@ -16,7 +10,6 @@ let systemPrompt = "Du bist ein hilfreicher Assistent. Antworte immer auf Deutsc
 let soundEnabled = true;
 let audioCtx = null;
 
-// ─── DOM Refs ─────────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const loadScreen    = $("load-screen");
 const chatArea      = $("chat-area");
@@ -41,7 +34,6 @@ const statTokens    = $("stat-tokens");
 const statSpeed     = $("stat-speed");
 const statTime      = $("stat-time");
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
 (async function init() {
   detectDevice();
   loadSettings();
@@ -55,7 +47,6 @@ const statTime      = $("stat-time");
   }
 })();
 
-// ─── Device Detection ─────────────────────────────────────────────────────────
 function detectDevice() {
   if (!deviceInfo) return;
   const gpu = navigator.gpu ? "WebGPU ✓" : "Kein WebGPU";
@@ -63,7 +54,6 @@ function detectDevice() {
   deviceInfo.querySelector("span").textContent = [gpu, mem].filter(Boolean).join(" · ");
 }
 
-// ─── Settings Persistence ─────────────────────────────────────────────────────
 function loadSettings() {
   try {
     const sp = localStorage.getItem("gso_system_prompt");
@@ -82,14 +72,12 @@ function saveSettings() {
   } catch (_) {}
 }
 
-// ─── Status ───────────────────────────────────────────────────────────────────
 function setStatus(state, text) {
   if (!statusEl) return;
   statusEl.className = "status-indicator " + state;
   if (statusText) statusText.textContent = text;
 }
 
-// ─── Sound Engine ─────────────────────────────────────────────────────────────
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   return audioCtx;
@@ -103,7 +91,7 @@ function playTick() {
     const gain = ctx.createGain();
     osc.connect(gain);
     gain.connect(ctx.destination);
-    // Soft typewriter click: short sine burst
+
     osc.frequency.setValueAtTime(600 + Math.random() * 200, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.04);
     gain.gain.setValueAtTime(0.06, ctx.currentTime);
@@ -178,7 +166,6 @@ function updateSystemPromptBtn() {
   }
 }
 
-// ─── Token Stats ──────────────────────────────────────────────────────────────
 function showStats(tokenCount, tokensPerSec, elapsedSec) {
   if (!tokenStats) return;
   tokenStats.style.display = "flex";
@@ -190,7 +177,6 @@ function showStats(tokenCount, tokensPerSec, elapsedSec) {
   statTime.textContent = elapsed;
 }
 
-// ─── Model Loading ────────────────────────────────────────────────────────────
 async function loadModel() {
   loadModelBtn.disabled = true;
   loadProgress.style.display = "block";
@@ -219,7 +205,6 @@ async function loadModel() {
   }
 }
 
-// ─── Chat Management ──────────────────────────────────────────────────────────
 function newChat() {
   currentChatId = "chat_" + Date.now();
   currentMessages = [];
@@ -245,7 +230,6 @@ function showWelcome() {
   messagesEl.innerHTML = '<div class="welcome-msg"><h2>GSO KI-Chat</h2><p>Dein Modell ist geladen und bereit.<br>Stell beliebige Fragen – dein Gespräch bleibt vollständig privat.</p><div class="welcome-prompt-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg><span>' + escapeHtml(preview) + '</span></div></div>';
 }
 
-// ─── Messaging ────────────────────────────────────────────────────────────────
 async function sendMessage() {
   const text = userInput.value.trim();
   if (!text || !engine || isGenerating) return;
@@ -291,14 +275,12 @@ async function sendMessage() {
         fullResponse += delta;
         tokenCount++;
 
-        // Tick sound — throttle to every ~3 tokens
         const now = performance.now();
         if (now - lastTickTime > 80) {
           playTick();
           lastTickTime = now;
         }
 
-        // Update stats live
         const elapsed = (performance.now() - startTime) / 1000;
         const tps = elapsed > 0 ? tokenCount / elapsed : 0;
         showStats(tokenCount, tps, elapsed);
@@ -314,7 +296,6 @@ async function sendMessage() {
     bubble.innerHTML = formatMarkdown(fullResponse);
     addCodeCopyButtons(bubble);
 
-    // Final stats
     const elapsed = (performance.now() - startTime) / 1000;
     showStats(tokenCount, tokenCount / elapsed, elapsed);
     playDone();
@@ -333,7 +314,6 @@ async function sendMessage() {
   scrollToBottom();
 }
 
-// ─── DOM Helpers ──────────────────────────────────────────────────────────────
 function appendMessageEl(role, content, animate) {
   const msg = document.createElement("div");
   msg.className = "message " + role;
@@ -349,7 +329,6 @@ function scrollToBottom() {
   chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-// ─── Markdown Formatter ───────────────────────────────────────────────────────
 function formatMarkdown(text) {
   let out = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   out = out.replace(/```(\w*)\n?([\s\S]*?)```/g, function(_, lang, code) {
@@ -392,7 +371,6 @@ function addCodeCopyButtons(container) {
   });
 }
 
-// ─── History Persistence ──────────────────────────────────────────────────────
 function saveHistory() {
   try {
     localStorage.setItem("gso_chats", JSON.stringify(chats));
@@ -433,7 +411,6 @@ function escapeHtml(str) {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// ─── Model Selection ──────────────────────────────────────────────────────────
 $("model-selector").querySelectorAll(".model-option").forEach(function(opt) {
   opt.addEventListener("click", function() {
     if (engine) return;
@@ -443,13 +420,11 @@ $("model-selector").querySelectorAll(".model-option").forEach(function(opt) {
   });
 });
 
-// ─── Auto-resize textarea ─────────────────────────────────────────────────────
 function autoResize() {
   userInput.style.height = "auto";
   userInput.style.height = Math.min(userInput.scrollHeight, 200) + "px";
 }
 
-// ─── System Prompt Modal ──────────────────────────────────────────────────────
 function openModal() {
   const overlay = $("modal-overlay");
   const input = $("system-prompt-input");
@@ -463,7 +438,6 @@ function closeModal() {
   if (overlay) overlay.style.display = "none";
 }
 
-// ─── Event Listeners ──────────────────────────────────────────────────────────
 function setupEventListeners() {
   loadModelBtn.addEventListener("click", loadModel);
 
@@ -498,7 +472,6 @@ function setupEventListeners() {
     sidebar.classList.toggle("open");
   });
 
-  // Sound toggle
   $("sound-btn").addEventListener("click", function() {
     soundEnabled = !soundEnabled;
     updateSoundBtn();
@@ -506,7 +479,6 @@ function setupEventListeners() {
     if (soundEnabled) playSend();
   });
 
-  // System prompt modal
   $("systemprompt-btn").addEventListener("click", openModal);
   $("modal-close").addEventListener("click", closeModal);
   $("modal-overlay").addEventListener("click", function(e) {
@@ -529,7 +501,6 @@ function setupEventListeners() {
     updateSystemPromptBtn();
   });
 
-  // Preset buttons
   document.querySelectorAll(".preset-btn").forEach(function(btn) {
     btn.addEventListener("click", function() {
       $("system-prompt-input").value = btn.dataset.prompt;
